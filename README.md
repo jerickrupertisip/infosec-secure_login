@@ -2,7 +2,7 @@
 
 ## Developing and Running
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Open terminal like **Git Bash** or any terminal.
 
 ```sh
 npm install
