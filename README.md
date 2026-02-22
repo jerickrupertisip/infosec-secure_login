@@ -10,3 +10,9 @@ npm run dev
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
+
+## Authentication Code
+
+Sign In and Sign Up functions
+
+![Authentication Code](./docs/images/auth.png)
