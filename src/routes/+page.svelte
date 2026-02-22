@@ -10,14 +10,29 @@
 		CardDescription,
 		CardFooter
 	} from '$lib/components/ui/card';
+	import * as z from 'zod';
+	import { authSchema } from '$lib/schemas';
 
 	let sign_in_form = $state(true);
 
-	let email_input: HTMLInputElement | undefined = $state();
-	let password_input: HTMLInputElement | undefined = $state();
+	let email = $state('');
+	let password = $state('');
+	let email_error: string | undefined = $state();
+	let password_error: string | undefined = $state();
 
 	function onsubmit() {
-		if (!email_input || !password_input) {
+		const result = authSchema.safeParse({
+			email,
+			password
+		});
+
+		email_error = undefined;
+		password_error = undefined;
+
+		if (!result.success) {
+			const error = z.flattenError(result.error);
+			email_error = error.fieldErrors.email?.[0];
+			password_error = error.fieldErrors.password?.[0];
 			return;
 		}
 
@@ -48,18 +63,28 @@
 				<Field.Group>
 					<Field.Field>
 						<Field.Label for="username">Email</Field.Label>
-						<Input ref={email_input} id="username" type="email" placeholder="Your email" />
+						<Input bind:value={email} id="username" type="email" placeholder="Your email" />
+						{#if email_error}
+							<Field.Error>
+								{email_error}
+							</Field.Error>
+						{/if}
 					</Field.Field>
 					<Field.Field>
 						<Field.Label for="password">Password</Field.Label>
-						<Input ref={password_input} id="password" type="password" placeholder="••••••••" />
+						<Input bind:value={password} id="password" type="password" placeholder="••••••••" />
+						{#if password_error}
+							<Field.Error>
+								{password_error}
+							</Field.Error>
+						{/if}
 					</Field.Field>
 				</Field.Group>
 			</Field.Set>
 		</form>
 	</CardContent>
 	<CardFooter class="flex-col gap-2">
-		<Button onclick={onsubmit} type="submit" class="w-full cursor-pointer">Continue</Button>
+		<Button onclick={onsubmit} type="submit" class="w-full cursor-pointer">Submit</Button>
 		<Button
 			variant="ghost"
 			class="w-full cursor-pointer font-normal"
