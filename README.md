@@ -49,8 +49,6 @@ TODO: assigned: jerickrupertisip
 
 ## Task 3 - Analysis Questions
 
-TODO: assigned: jerickrupertisip
-
 1. What is hashing?
 
 TODO: assigned: Anyone
