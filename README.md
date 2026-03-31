@@ -5,11 +5,23 @@
 Open terminal like **Git Bash** or any terminal.
 
 ```sh
+# Install the dependencies
 npm install
+
+# Copy sample .env file
+cp .env.example .env
+
+npm run db:push-force
+
+# Sync & Generate dummy data to database (optional)
+npm run snaplet:sync
+npm run snaplet:seed
+
+## Running the App
 
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# OR start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
 
