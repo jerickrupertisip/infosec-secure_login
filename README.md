@@ -5,11 +5,23 @@
 Open terminal like **Git Bash** or any terminal.
 
 ```sh
+# Install the dependencies
 npm install
+
+# Copy sample .env file
+cp .env.example .env
+
+npm run db:push-force
+
+# Sync & Generate dummy data to database (optional)
+npm run snaplet:sync
+npm run snaplet:seed
+
+## Running the App
 
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# OR start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
 
@@ -117,7 +129,7 @@ In the database, it has a "users" table, it has a columns "email" and
 how hashing works in your program (3–5 sentences)" Each user is in the database
 is identified by their email address.
 
-The function "verifyUser" should return the user itself or throwing an
+The function "authenticateUser" should return the user itself or throwing an
 exception if an error occurs or Authentication failed or the user isnt found.
 First queried the database to get the user identified by "email", this should
 return an array of users, if the array is empty, then the user isnt found, if

@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1774942819919,
+      "tag": "0000_numerous_major_mapleleaf",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1774946628007,
+      "tag": "0001_big_valeria_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1774946831272,
+      "tag": "0002_faulty_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1774952066089,
+      "tag": "0003_daily_shatterstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1774953145963,
+      "tag": "0004_nifty_talos",
+      "breakpoints": true
+    }
+  ]
+}

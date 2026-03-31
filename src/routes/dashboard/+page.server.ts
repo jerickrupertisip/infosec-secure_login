@@ -1,15 +1,18 @@
 import { redirect, type Actions } from '@sveltejs/kit';
+import { verifyToken } from '$lib/server/services/auth';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies }) => {
   const session = cookies.get('session');
+  const payload = verifyToken(session);
 
-  if (!session) {
+  if (!payload) {
     throw redirect(303, '/');
   }
 
   return {
-    email: session
+    email: payload.email,
+    role: payload.role
   };
 };
 

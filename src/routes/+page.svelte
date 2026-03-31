@@ -18,6 +18,7 @@
 
 	let email_error: string | undefined = $state();
 	let password_error: string | undefined = $state();
+	let error_footer: string | undefined = $state();
 </script>
 
 <form
@@ -30,6 +31,7 @@
 
 		email_error = undefined;
 		password_error = undefined;
+		error_footer = undefined;
 
 		if (!result.success) {
 			const error = z.flattenError(result.error);
@@ -45,9 +47,12 @@
 					email_error = result.data?.message as string;
 				} else if (result.data?.errorCode == 'AUTH_INVALID_PASSWORD') {
 					password_error = result.data?.message as string;
+				} else if (result.data?.errorCode == 'AUTH_USER_LOCKED') {
+					error_footer = result.data?.message as string;
 				} else {
 					email_error = result.data?.message as string;
 					password_error = result.data?.message as string;
+					error_footer = `Error Code: ${result.data?.errorCode as string}`;
 				}
 			}
 			return update();
@@ -81,12 +86,22 @@
 					<Field.Field>
 						<Field.Label for="password">Password</Field.Label>
 						<Input name="password" id="password" type="password" placeholder="••••••••" />
+						{#if sign_in_form}
+							<p class="text-sm text-muted-foreground text-center">
+								<a href="/reset-password" class="underline">Forgot password?</a>
+							</p>
+						{/if}
 						{#if password_error}
 							<Field.Error>
 								{password_error}
 							</Field.Error>
 						{/if}
 					</Field.Field>
+					{#if error_footer}
+						<Field.Error class="text-center">
+							{error_footer}
+						</Field.Error>
+					{/if}
 				</Field.Group>
 			</Field.Set>
 		</CardContent>
