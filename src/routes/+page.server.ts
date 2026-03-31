@@ -1,5 +1,5 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit';
-import { createUser, authenticateUser } from '$lib/server/services/auth';
+import { createToken, createUser, authenticateUser } from '$lib/server/services/auth';
 
 const errorMap: Record<string, string> = {
   'AUTH_USER_NOT_FOUND': 'User not found',
@@ -16,8 +16,13 @@ export const actions: Actions = {
 
     try {
       const user = await createUser(email, password);
+      const token = createToken({ id: user.id, email: user.email });
 
-      cookies.set('session', user.email, { path: '/' });
+      cookies.set('session', token, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax'
+      });
     } catch (err: any) {
       if (err.message in errorMap) {
         return fail(400, { errorCode: err.message, message: errorMap[err.message] });
@@ -36,8 +41,13 @@ export const actions: Actions = {
 
     try {
       const user = await authenticateUser(email, password);
+      const token = createToken({ id: user.id, email: user.email });
 
-      cookies.set('session', user.email, { path: '/' });
+      cookies.set('session', token, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax'
+      });
     } catch (err: any) {
       if (err.message in errorMap) {
         return fail(400, { errorCode: err.message, message: errorMap[err.message] });

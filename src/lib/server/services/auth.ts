@@ -3,9 +3,45 @@ import { users } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { scrypt as _scrypt } from 'crypto'
 import { comparePassword, createPassword } from './password'
+import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 
+dotenv.config()
+
+const JWT_SECRET = process.env.JWT_SECRET!
 const LOGIN_ATTEMPT_LIMIT = 5;
 const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
+
+export function createToken(payload: { id: number | string; email: string }) {
+  return jwt.sign(payload, JWT_SECRET)
+}
+
+export function verifyToken(token: string | undefined) {
+  if (!token) {
+    return null
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET)
+
+    if (typeof payload !== 'object' || payload === null) {
+      return null
+    }
+
+    const typedPayload = payload as { id?: number | string; email?: string }
+    if (typeof typedPayload.email !== 'string') {
+      return null
+    }
+
+    if (typeof typedPayload.id !== 'number' && typeof typedPayload.id !== 'string') {
+      return null
+    }
+
+    return { id: typedPayload.id, email: typedPayload.email }
+  } catch {
+    return null
+  }
+}
 
 export async function createUser(email: string, pass: string) {
   // 1. Check if user already exists
