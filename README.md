@@ -117,7 +117,7 @@ In the database, it has a "users" table, it has a columns "email" and
 how hashing works in your program (3–5 sentences)" Each user is in the database
 is identified by their email address.
 
-The function "verifyUser" should return the user itself or throwing an
+The function "authenticateUser" should return the user itself or throwing an
 exception if an error occurs or Authentication failed or the user isnt found.
 First queried the database to get the user identified by "email", this should
 return an array of users, if the array is empty, then the user isnt found, if

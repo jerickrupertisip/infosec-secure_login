@@ -5,6 +5,6 @@ export const users = sqliteTable("users", {
     .$defaultFn(() => crypto.randomUUID()),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  login_attempt: int("login_attempt").notNull().default(0),
+  login_attempts: int("login_attempts").notNull().default(0),
   lock_until: int("lock_until").notNull().default(0),
 });

@@ -21,7 +21,7 @@ const main = async () => {
     email: (x) => copycat.email(x.seed, { domain: "email.com" }).toLowerCase(),
     id: (x) => copycat.uuid(x.seed),
     password: password,
-    login_attempt: 0,
+    login_attempts: 0,
     lock_until: 0,
   }));
 

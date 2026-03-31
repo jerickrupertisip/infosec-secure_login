@@ -1,10 +1,11 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit';
-import { createUser, verifyUser } from '$lib/server/services/auth';
+import { createUser, authenticateUser } from '$lib/server/services/auth';
 
 const errorMap: Record<string, string> = {
   'AUTH_USER_NOT_FOUND': 'User not found',
   'AUTH_INVALID_PASSWORD': 'Invalid password.',
   'AUTH_USER_EXISTS': 'User already exists.',
+  'AUTH_USER_LOCKED': 'User is locked.',
 };
 
 export const actions: Actions = {
@@ -34,7 +35,7 @@ export const actions: Actions = {
     const password = formData.get('password') as string;
 
     try {
-      const user = await verifyUser(email, password);
+      const user = await authenticateUser(email, password);
 
       cookies.set('session', user.email, { path: '/' });
     } catch (err: any) {
