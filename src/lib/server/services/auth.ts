@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET!
 const LOGIN_ATTEMPT_LIMIT = 5;
 const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
 
-export function createToken(payload: { id: number | string; email: string }) {
+export function createToken(payload: { id: number | string; email: string; role: string }) {
   return jwt.sign(payload, JWT_SECRET)
 }
 
@@ -28,8 +28,8 @@ export function verifyToken(token: string | undefined) {
       return null
     }
 
-    const typedPayload = payload as { id?: number | string; email?: string }
-    if (typeof typedPayload.email !== 'string') {
+    const typedPayload = payload as { id?: number | string; email?: string; role?: string }
+    if (typeof typedPayload.email !== 'string' || typeof typedPayload.role !== 'string') {
       return null
     }
 
@@ -37,7 +37,7 @@ export function verifyToken(token: string | undefined) {
       return null
     }
 
-    return { id: typedPayload.id, email: typedPayload.email }
+    return { id: typedPayload.id, email: typedPayload.email, role: typedPayload.role }
   } catch {
     return null
   }
@@ -57,6 +57,7 @@ export async function createUser(email: string, pass: string) {
   const newUser = await db.insert(users).values({
     email,
     password: hashedPassword,
+    role: 'user',
   }).returning()
 
   const { password, ...userWithoutPassword } = newUser[0]

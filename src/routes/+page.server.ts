@@ -16,7 +16,7 @@ export const actions: Actions = {
 
     try {
       const user = await createUser(email, password);
-      const token = createToken({ id: user.id, email: user.email });
+      const token = createToken({ id: user.id, email: user.email, role: user.role ?? 'user' });
 
       cookies.set('session', token, {
         path: '/',
@@ -41,7 +41,7 @@ export const actions: Actions = {
 
     try {
       const user = await authenticateUser(email, password);
-      const token = createToken({ id: user.id, email: user.email });
+      const token = createToken({ id: user.id, email: user.email, role: user.role ?? 'user' });
 
       cookies.set('session', token, {
         path: '/',

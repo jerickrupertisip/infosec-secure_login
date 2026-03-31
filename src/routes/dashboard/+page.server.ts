@@ -11,7 +11,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
   }
 
   return {
-    email: payload.email
+    email: payload.email,
+    role: payload.role
   };
 };
 

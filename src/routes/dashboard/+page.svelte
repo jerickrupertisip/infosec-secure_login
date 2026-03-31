@@ -18,6 +18,8 @@
 		<CardTitle class="scroll-m-20 text-2xl font-semibold tracking-tight">Welcome to Dashboard!</CardTitle>
 		<CardDescription>
 			You are logged in as <span class="font-medium text-foreground">{data.email}</span>
+			<br />
+			Role: <span class="font-medium text-foreground">{data.role}</span>
 		</CardDescription>
 	</CardHeader>
 	<CardContent>

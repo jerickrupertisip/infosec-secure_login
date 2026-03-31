@@ -16,11 +16,22 @@ const main = async () => {
 
   const password = await createPassword("password123");
 
-  // Seed the database with 10 users
-  await seed.users((x) => x(10, {
+  // Seed the database with one admin user
+  await seed.users((x) => x(1, {
+    email: () => "admin@email.com",
+    id: (x) => copycat.uuid(x.seed),
+    password: password,
+    role: 'admin',
+    login_attempts: 0,
+    lock_until: 0,
+  }));
+
+  // Seed the database with 9 regular users
+  await seed.users((x) => x(9, {
     email: (x) => copycat.email(x.seed, { domain: "email.com" }).toLowerCase(),
     id: (x) => copycat.uuid(x.seed),
     password: password,
+    role: 'user',
     login_attempts: 0,
     lock_until: 0,
   }));
