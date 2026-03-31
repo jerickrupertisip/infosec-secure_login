@@ -11,5 +11,9 @@ export const authSchema = z.object({
     .regex(/[a-zA-Z]/, 'At least one letter')
 });
 
+export const resetPasswordSchema = z.object({
+  password: authSchema.shape.password,
+});
+
 // You can also export the Type for TypeScript support
 export type AuthSchema = typeof authSchema;

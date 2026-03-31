@@ -86,6 +86,11 @@
 					<Field.Field>
 						<Field.Label for="password">Password</Field.Label>
 						<Input name="password" id="password" type="password" placeholder="••••••••" />
+						{#if sign_in_form}
+							<p class="text-sm text-muted-foreground text-center">
+								<a href="/reset-password" class="underline">Forgot password?</a>
+							</p>
+						{/if}
 						{#if password_error}
 							<Field.Error>
 								{password_error}

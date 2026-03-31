@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db'
 import { users } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
-import { scrypt as _scrypt } from 'crypto'
+import { scrypt as _scrypt, randomBytes, createHash } from 'crypto'
 import { comparePassword, createPassword } from './password'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
@@ -11,6 +11,11 @@ dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET!
 const LOGIN_ATTEMPT_LIMIT = 5;
 const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
+const TOKEN_EXPIRATION = 60 * 60 * 1000; // 1 hour
+
+function hashResetToken(token: string) {
+  return createHash('sha256').update(token).digest('hex')
+}
 
 export function createToken(payload: { id: number | string; email: string; role: string }) {
   return jwt.sign(payload, JWT_SECRET)
@@ -41,6 +46,60 @@ export function verifyToken(token: string | undefined) {
   } catch {
     return null
   }
+}
+
+export async function createResetToken(email: string) {
+  const user = await db.select().from(users).where(eq(users.email, email))
+  if (user.length === 0) {
+    return null
+  }
+
+  const token = randomBytes(32).toString('hex')
+  const tokenHash = hashResetToken(token)
+  const expires = Date.now() + TOKEN_EXPIRATION; // 1 hour
+
+  await db.update(users).set({
+    reset_token_hash: tokenHash,
+    reset_token_expires: expires,
+  }).where(eq(users.id, user[0].id))
+
+  return token
+}
+
+export async function verifyResetToken(token: string | undefined) {
+  if (!token) {
+    return null
+  }
+
+  const tokenHash = hashResetToken(token)
+  const user = await db.select().from(users).where(eq(users.reset_token_hash, tokenHash))
+  if (user.length === 0) {
+    return null
+  }
+
+  const userData = user[0]
+  if (userData.reset_token_expires < Date.now()) {
+    return null
+  }
+
+  const { password, ...userWithoutPassword } = userData
+  return userWithoutPassword
+}
+
+export async function resetPassword(token: string, pass: string) {
+  const user = await verifyResetToken(token)
+  if (!user) {
+    throw new Error('AUTH_RESET_TOKEN_INVALID')
+  }
+
+  const hashedPassword = await createPassword(pass)
+  await db.update(users).set({
+    password: hashedPassword,
+    reset_token_hash: null,
+    reset_token_expires: 0,
+  }).where(eq(users.id, user.id))
+
+  return true
 }
 
 export async function createUser(email: string, pass: string) {
