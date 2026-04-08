@@ -34,22 +34,22 @@ export function verifyToken(token: string | undefined): Payload | null {
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET)
+    const decoded_token = jwt.verify(token, JWT_SECRET)
 
-    if (typeof payload !== 'object' || payload === null) {
+    if (typeof decoded_token !== 'object' || decoded_token === null) {
       return null
     }
 
-    const typedPayload = payload as { id?: number | string; email?: string; role?: string }
-    if (typeof typedPayload.email !== 'string' || typeof typedPayload.role !== 'string') {
+    const payload = decoded_token as Payload
+    if (typeof payload.email !== 'string' || typeof payload.role !== 'string') {
       return null
     }
 
-    if (typeof typedPayload.id !== 'number' && typeof typedPayload.id !== 'string') {
+    if (typeof payload.id !== 'number' && typeof payload.id !== 'string') {
       return null
     }
 
-    return { id: typedPayload.id, email: typedPayload.email, role: typedPayload.role }
+    return { id: payload.id, email: payload.email, role: payload.role }
   } catch {
     return null
   }
