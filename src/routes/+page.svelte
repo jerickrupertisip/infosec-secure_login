@@ -37,6 +37,9 @@
 			const error = z.flattenError(result.error);
 			email_error = error.fieldErrors.email?.[0];
 			password_error = error.fieldErrors.password?.[0];
+			if (password_error !== null) {
+				password_error = 'Password requires: ' + password_error;
+			}
 
 			return cancel();
 		}
@@ -86,15 +89,15 @@
 					<Field.Field>
 						<Field.Label for="password">Password</Field.Label>
 						<Input name="password" id="password" type="password" placeholder="••••••••" />
-						{#if sign_in_form}
-							<p class="text-sm text-muted-foreground text-center">
-								<a href="/reset-password" class="underline">Forgot password?</a>
-							</p>
-						{/if}
 						{#if password_error}
 							<Field.Error>
 								{password_error}
 							</Field.Error>
+						{/if}
+						{#if sign_in_form}
+							<p class="text-center text-sm text-muted-foreground">
+								<a href="/reset-password" class="underline">Forgot password?</a>
+							</p>
 						{/if}
 					</Field.Field>
 					{#if error_footer}

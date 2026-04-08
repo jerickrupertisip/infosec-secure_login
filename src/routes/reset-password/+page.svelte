@@ -47,7 +47,7 @@
 
       const validation = resetPasswordSchema.safeParse({ password });
       if (!validation.success) {
-        error = validation.error.issues[0]?.message ?? 'Invalid password';
+        error = "Password requires: " + (validation.error.issues[0]?.message ?? 'Invalid password');
         return cancel();
       }
     }
