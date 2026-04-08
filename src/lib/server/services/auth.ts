@@ -13,15 +13,22 @@ const LOGIN_ATTEMPT_LIMIT = 5;
 const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
 const TOKEN_EXPIRATION = 60 * 60 * 1000; // 1 hour
 
+type Payload = {
+  id?: number | string,
+  email?: string,
+  role?: string,
+};
+
+
 function hashResetToken(token: string) {
   return createHash('sha256').update(token).digest('hex')
 }
 
-export function createToken(payload: { id: number | string; email: string; role: string }) {
+export function createToken(payload: Payload) {
   return jwt.sign(payload, JWT_SECRET)
 }
 
-export function verifyToken(token: string | undefined) {
+export function verifyToken(token: string | undefined): Payload | null {
   if (!token) {
     return null
   }
@@ -171,4 +178,20 @@ export async function authenticateUser(email: string, pass: string) {
 
   const { password, ...userWithoutPassword } = userData
   return userWithoutPassword
+}
+
+export async function getUserLockTime(email: string): Promise<number> {
+  try {
+    // 1. Find the user by email
+    const user = await db.select().from(users).where(eq(users.email, email))
+
+    // 2. If user doesn't exist, return null
+    if (user.length == 0) {
+      throw new Error("AUTH_USER_NOT_FOUND")
+    }
+
+    return user[0].lock_until;
+  } catch {
+    return 0
+  }
 }
